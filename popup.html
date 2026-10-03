@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="popup.css" />
+    <title>SEO Bakış</title>
+  </head>
+  <body>
+    <header>
+      <div class="score" id="score"><b id="scoreNum">–</b><small>/100</small></div>
+      <div class="head">
+        <h1>SEO Bakış</h1>
+        <p id="url" class="url">Sayfa inceleniyor…</p>
+        <div class="counts" id="counts"></div>
+      </div>
+    </header>
+    <section class="serp" id="serp" hidden>
+      <small>Google'da yaklaşık görünüm</small>
+      <div class="serp-url" id="serpUrl"></div>
+      <div class="serp-title" id="serpTitle"></div>
+      <div class="serp-desc" id="serpDesc"></div>
+    </section>
+    <main id="checks"></main>
+    <details id="outline"><summary>Başlık hiyerarşisi</summary><ol id="heads"></ol></details>
+    <footer id="foot"></footer>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

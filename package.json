@@ -1,0 +1,13 @@
+{
+  "name": "seo-bakis",
+  "version": "1.0.0",
+  "description": "Herhangi bir sayfanın SEO durumunu tek tıkla gösteren Chrome eklentisi",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "İlker Tokat",
+  "scripts": {
+    "test": "node --test --test-reporter=spec \"test/**/*.test.js\"",
+    "zip": "powershell -NoProfile -Command \"Compress-Archive -Force -Path manifest.json,popup.html,popup.css,popup.js,src,icons -DestinationPath seo-bakis.zip\""
+  }
+}
