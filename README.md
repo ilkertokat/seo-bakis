@@ -21,7 +21,8 @@
 | **Erişilebilirlik** | `alt` özniteliği olmayan görseller (boş `alt=""` dekoratif görseller için geçerli sayılır) |
 | **Performans** | `width` / `height` belirtilmemiş görseller (düzen kayması, CLS riski) |
 | **Sosyal** | Open Graph: `og:title`, `og:description`, `og:image` |
-| **Zengin sonuç** | JSON-LD yapılandırılmış veri türleri (`@graph` dizileri dahil) |
+| **Zengin sonuç** | JSON-LD yapılandırılmış veri türleri (`@graph` ve diziler dahil); bozuk (ayrıştırılamayan) JSON-LD blokları blok numarasıyla, `@context` / `@type` eksikleri |
+| **Çok dillilik** | `hreflang`: geçersiz dil kodları (ör. `en_US`), aynı dilin farklı adreslere gitmesi, göreli adresler, sayfanın kendisine referans ve `x-default` eksikliği |
 | **Bağlantılar / Güvenlik** | İç ve dış bağlantı sayısı, `nofollow`, HTTPS |
 
 Ayrıca başlık hiyerarşisini girintili bir ağaç olarak gösterir.
@@ -34,13 +35,15 @@ popup.html/.css/.js
 src/
 ├── collect.js     # aktif sekmede çalışır, sayfadan serileştirilebilir veri toplar
 ├── analyze.js     # saf değerlendirme fonksiyonu → { checks, score }
+├── structured.js  # JSON-LD ayrıştırma ve hreflang kontrolleri (saf)
 └── sample.js      # testler ve demo modu için örnek sayfa verisi
-test/analyze.test.js
+test/              # analyze.test.js, structured.test.js
 ```
 
 - **En az izin:** `activeTab` sayesinde eklenti yalnızca kullanıcı simgeye tıkladığında ve yalnızca o sekmeye erişir; hiçbir veri dışarı gönderilmez.
 - **Toplama ve değerlendirme ayrı:** `collect()` DOM'dan ham veriyi çıkarır, `analyze()` saf bir fonksiyondur. Değerlendirme mantığı tarayıcı olmadan `node:test` ile test edilir.
 - **Bağımlılık ve derleme yok:** Doğrudan ES modülleri; klasör olduğu gibi Chrome'a yüklenir.
+- **Yapılandırılmış veri ve hreflang:** `collect()` JSON-LD bloklarını ham metin, `hreflang` bağlantılarını ham öznitelik olarak toplar; ayrıştırma ve kurallar `structured.js`'te. Böylece bozuk bir JSON-LD sessizce yutulmaz, hata olarak raporlanır.
 - `popup.html?demo` adresi örnek veriyle çalışır; arayüz eklenti kurmadan geliştirilebilir.
 
 ## Kurulum
@@ -50,7 +53,7 @@ test/analyze.test.js
 3. Herhangi bir sayfada araç çubuğundaki **SEO Bakış** simgesine tıklayın.
 
 ```bash
-npm test        # 6 test
+npm test        # 15 test
 npm run zip     # Chrome Web Mağazası için seo-bakis.zip (Windows)
 ```
 
@@ -58,7 +61,7 @@ npm run zip     # Chrome Web Mağazası için seo-bakis.zip (Windows)
 
 ## English
 
-**SEO Bakış** ("SEO glance") is a zero-dependency Manifest V3 Chrome extension that audits the current page in one click: title and meta description length (Unicode-aware), canonical, robots, lang, viewport, heading hierarchy and skipped levels, missing `alt` and image dimensions, Open Graph tags, JSON-LD types and link counts. It scores the page out of 100, renders an approximate Google snippet and groups issues by severity. Collection (`collect.js`, runs in the tab) is separated from evaluation (`analyze.js`, a pure function covered by `node:test`), and it requests only the `activeTab` and `scripting` permissions.
+**SEO Bakış** ("SEO glance") is a zero-dependency Manifest V3 Chrome extension that audits the current page in one click: title and meta description length (Unicode-aware), canonical, robots, lang, viewport, heading hierarchy and skipped levels, missing `alt` and image dimensions, Open Graph tags, JSON-LD types and link counts. It also validates structured data and multilingual markup: broken (unparseable) JSON-LD blocks are reported as errors with their block number, missing `@context`/`@type` are flagged, and `hreflang` alternates are checked for invalid language codes, conflicting duplicates, relative URLs, a missing self-reference and a missing `x-default`. It scores the page out of 100, renders an approximate Google snippet and groups issues by severity. Collection (`collect.js`, runs in the tab) is separated from evaluation (`analyze.js`, a pure function covered by `node:test`), and it requests only the `activeTab` and `scripting` permissions.
 
 ## Lisans
 

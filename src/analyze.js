@@ -5,6 +5,8 @@
  * @typedef {{ level: "ok" | "warn" | "error", group: string, message: string }} Check
  */
 
+import { checkHreflang, parseJsonLd } from "./structured.js";
+
 export const LIMITS = { titleMin: 30, titleMax: 60, descMin: 70, descMax: 160, minWords: 300 };
 
 const len = (s) => [...(s || "").trim()].length; // Türkçe karakterler tek sayılsın
@@ -63,8 +65,16 @@ export function analyze(d) {
   else add("ok", "Sosyal", "Open Graph etiketleri tam");
 
   // --- Yapılandırılmış veri
-  if (d.schemaTypes.length) add("ok", "Zengin sonuç", `Yapılandırılmış veri: ${d.schemaTypes.join(", ")}`);
-  else add("warn", "Zengin sonuç", "JSON-LD yapılandırılmış veri yok");
+  const ld = parseJsonLd(d.jsonLd);
+  if (ld.invalid.length) add("error", "Zengin sonuç", `${ld.invalid.length} JSON-LD bloğu bozuk (geçersiz JSON): ${ld.invalid
+    .map((b) => `#${b.index + 1} ${b.error}`).join("; ")}`);
+  if (ld.types.length) add("ok", "Zengin sonuç", `Yapılandırılmış veri: ${ld.types.join(", ")}`);
+  else if (!ld.invalid.length) add("warn", "Zengin sonuç", "JSON-LD yapılandırılmış veri yok");
+  if (ld.noContext) add("warn", "Zengin sonuç", `${ld.noContext} JSON-LD bloğunda @context yok`);
+  if (ld.noType) add("warn", "Zengin sonuç", `${ld.noType} JSON-LD öğesinde @type yok`);
+
+  // --- Çok dillilik
+  for (const c of checkHreflang(d.hreflang, d.canonical || d.url)) add(c.level, "Çok dillilik", c.message);
 
   // --- Bağlantılar
   if (d.links.internal === 0) add("warn", "Bağlantılar", "Sayfada iç bağlantı yok");

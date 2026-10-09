@@ -18,7 +18,17 @@ export const SAMPLE = {
     { src: "/kahvalti.webp", alt: "Serpme kahvaltı", width: null, height: null },
   ],
   og: { "og:title": "Menü — Örnek Kafe", "og:description": "Güncel menü", "og:image": "https://ornekkafe.com/og.jpg" },
-  schemaTypes: ["Restaurant", "Menu"],
+  jsonLd: [
+    JSON.stringify({ "@context": "https://schema.org", "@graph": [
+      { "@type": "Restaurant", name: "Örnek Kafe", servesCuisine: "Türk" },
+      { "@type": "Menu", name: "Menü" },
+    ] }),
+  ],
+  hreflang: [
+    { lang: "tr", href: "https://ornekkafe.com/menu" },
+    { lang: "en", href: "https://ornekkafe.com/en/menu" },
+    { lang: "x-default", href: "https://ornekkafe.com/menu" },
+  ],
   links: { internal: 14, external: 3, nofollow: 1 },
   wordCount: 640,
 };

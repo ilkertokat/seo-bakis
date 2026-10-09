@@ -8,13 +8,11 @@ export function collect() {
   document.querySelectorAll('meta[property^="og:"], meta[name^="twitter:"]').forEach((m) => {
     og[m.getAttribute("property") || m.getAttribute("name")] = m.getAttribute("content") || "";
   });
-  const schemaTypes = [];
-  document.querySelectorAll('script[type="application/ld+json"]').forEach((s) => {
-    try {
-      const data = JSON.parse(s.textContent || "{}");
-      for (const item of [].concat(data["@graph"] || data)) if (item && item["@type"]) schemaTypes.push([].concat(item["@type"]).join("/"));
-    } catch { /* bozuk JSON-LD yok sayılır */ }
-  });
+  // JSON-LD ham metin olarak toplanır; ayrıştırma ve hata tespiti structured.js'te yapılır
+  const jsonLd = [...document.querySelectorAll('script[type="application/ld+json"]')].slice(0, 50)
+    .map((s) => (s.textContent || "").slice(0, 100000));
+  const hreflang = [...document.querySelectorAll('link[rel="alternate"][hreflang]')].slice(0, 300)
+    .map((l) => ({ lang: l.getAttribute("hreflang") || "", href: l.getAttribute("href") || "" }));
   const links = { internal: 0, external: 0, nofollow: 0 };
   document.querySelectorAll("a[href]").forEach((a) => {
     let url;
@@ -39,7 +37,7 @@ export function collect() {
       src: img.currentSrc || img.src, alt: img.getAttribute("alt"),
       width: img.getAttribute("width"), height: img.getAttribute("height"),
     })),
-    og, schemaTypes, links,
+    og, jsonLd, hreflang, links,
     wordCount: text ? text.split(/\s+/).length : 0,
   };
 }
