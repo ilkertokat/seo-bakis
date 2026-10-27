@@ -29,6 +29,14 @@ describe("analyze", () => {
     assert.equal(grade(r.score), "poor");
   });
 
+  it("treats robots 'none' as noindex and warns on nofollow", () => {
+    assert.equal(find(analyze({ ...base(), robots: "NONE" }), "kapalı")?.level, "error");
+    assert.equal(find(analyze({ ...base(), robots: "index, nofollow" }), "takip edilmiyor")?.level, "warn");
+    assert.equal(find(analyze({ ...base(), robots: "googlebot: noindex" }), "kapalı")?.level, "error");
+    const ok = analyze({ ...base(), robots: "index, follow, max-snippet:-1, max-image-preview:large" });
+    assert.equal(ok.checks.some((c) => /kapalı|takip edilmiyor/.test(c.message)), false);
+  });
+
   it("detects heading level skips and multiple H1s", () => {
     const r = analyze({ ...base(), headings: [{ level: 1 }, { level: 3 }, { level: 1 }, { level: 2 }, { level: 5 }] });
     assert.match(find(r, "atlanmış").message, /H1 → H3, H2 → H5/);

@@ -32,7 +32,10 @@ export function analyze(d) {
 
   if (!d.canonical) add("warn", "Meta", "Canonical bağlantısı yok");
   else add("ok", "Meta", "Canonical tanımlı");
-  if (/noindex/i.test(d.robots || "")) add("error", "Meta", `Sayfa arama motorlarına kapalı (robots: ${d.robots})`);
+  // "none" = "noindex, nofollow"; yönergeler virgülle ayrılır, "googlebot: noindex" gibi önekler de olabilir
+  const robots = (d.robots || "").toLowerCase().split(",").map((r) => r.trim().replace(/^[\w-]+:\s*/, ""));
+  if (robots.includes("noindex") || robots.includes("none")) add("error", "Meta", `Sayfa arama motorlarına kapalı (robots: ${d.robots})`);
+  else if (robots.includes("nofollow")) add("warn", "Meta", `Sayfadaki bağlantılar takip edilmiyor (robots: ${d.robots})`);
   if (!d.lang) add("warn", "Meta", "<html lang> özniteliği yok");
   if (!d.viewport) add("error", "Mobil", "viewport meta etiketi yok: mobilde düzgün görünmez");
 

@@ -15,7 +15,7 @@
 
 | Grup | Kontroller |
 |---|---|
-| **Meta** | `<title>` uzunluğu (30–60, Türkçe karakterler doğru sayılır), meta açıklama (70–160), canonical, `robots: noindex`, `<html lang>` |
+| **Meta** | `<title>` uzunluğu (30–60, Türkçe karakterler doğru sayılır), meta açıklama (70–160), canonical, `robots` (`noindex` / `none` hata, `nofollow` uyarı), `<html lang>` |
 | **Mobil** | viewport meta etiketi |
 | **İçerik** | Tek H1, atlanan başlık seviyeleri (H2 → H4), kelime sayısı |
 | **Erişilebilirlik** | `alt` özniteliği olmayan görseller (boş `alt=""` dekoratif görseller için geçerli sayılır) |
@@ -53,7 +53,7 @@ test/              # analyze.test.js, structured.test.js
 3. Herhangi bir sayfada araç çubuğundaki **SEO Bakış** simgesine tıklayın.
 
 ```bash
-npm test        # 15 test
+npm test        # 16 test
 npm run zip     # Chrome Web Mağazası için seo-bakis.zip (Windows)
 ```
 
@@ -61,7 +61,7 @@ npm run zip     # Chrome Web Mağazası için seo-bakis.zip (Windows)
 
 ## English
 
-**SEO Bakış** ("SEO glance") is a zero-dependency Manifest V3 Chrome extension that audits the current page in one click: title and meta description length (Unicode-aware), canonical, robots, lang, viewport, heading hierarchy and skipped levels, missing `alt` and image dimensions, Open Graph tags, JSON-LD types and link counts. It also validates structured data and multilingual markup: broken (unparseable) JSON-LD blocks are reported as errors with their block number, missing `@context`/`@type` are flagged, and `hreflang` alternates are checked for invalid language codes, conflicting duplicates, relative URLs, a missing self-reference and a missing `x-default`. It scores the page out of 100, renders an approximate Google snippet and groups issues by severity. Collection (`collect.js`, runs in the tab) is separated from evaluation (`analyze.js`, a pure function covered by `node:test`), and it requests only the `activeTab` and `scripting` permissions.
+**SEO Bakış** ("SEO glance") is a zero-dependency Manifest V3 Chrome extension that audits the current page in one click: title and meta description length (Unicode-aware), canonical, robots directives (`noindex`/`none` as errors, `nofollow` as a warning), lang, viewport, heading hierarchy and skipped levels, missing `alt` and image dimensions, Open Graph tags, JSON-LD types and link counts. It also validates structured data and multilingual markup: broken (unparseable) JSON-LD blocks are reported as errors with their block number, missing `@context`/`@type` are flagged, and `hreflang` alternates are checked for invalid language codes, conflicting duplicates, relative URLs, a missing self-reference and a missing `x-default`. It scores the page out of 100, renders an approximate Google snippet and groups issues by severity. Collection (`collect.js`, runs in the tab) is separated from evaluation (`analyze.js`, a pure function covered by `node:test`), and it requests only the `activeTab` and `scripting` permissions.
 
 ## Lisans
 
