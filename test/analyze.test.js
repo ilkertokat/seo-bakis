@@ -37,6 +37,10 @@ describe("analyze", () => {
     assert.equal(ok.checks.some((c) => /kapalı|takip edilmiyor/.test(c.message)), false);
   });
 
+  it("treats googlebot meta tag as noindex", () => {
+    assert.equal(find(analyze({ ...base(), googlebot: "noindex" }), "kapalı")?.level, "error");
+  });
+
   it("detects heading level skips and multiple H1s", () => {
     const r = analyze({ ...base(), headings: [{ level: 1 }, { level: 3 }, { level: 1 }, { level: 2 }, { level: 5 }] });
     assert.match(find(r, "atlanmış").message, /H1 → H3, H2 → H5/);

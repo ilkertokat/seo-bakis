@@ -28,6 +28,7 @@ export function collect() {
     title: document.title,
     description: meta('meta[name="description"]'),
     robots: meta('meta[name="robots"]'),
+    googlebot: meta('meta[name="googlebot"]'),
     viewport: meta('meta[name="viewport"]'),
     canonical: document.querySelector('link[rel="canonical"]')?.href || "",
     lang: document.documentElement.lang || "",
